@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+import tempfile
+import os
+import stat
+import sys
+
+def error(msg):
+  print >> sys.stderr, '\033[1;31m%s\033[0m' % msg
+
+def success(msg):
+  print >> sys.stderr, '\033[1;32m%s\033[0m' % msg
+
+def log(msg):
+  pass
+  print >> sys.stderr, '\033[0;37m  %s\033[0m' % msg
+
+def die(msg):
+  error(msg)
+  #if os.path.exists('.out'):
+  #  error(open('.out').read())
+  #sys.exit(1)
+
+
+def check_make(src_files, targets, bin_files):
+  # ensure the required files exist
+  for f in src_files:
+    src = os.path.join(SRC, f)
+    if not os.path.exists(src):
+      die('Could not find required file "%s"!' % f)
+    log('found required file "%s"' % f)
+    os.system('cp %s %s' % (src, DEST))
+  
+  # try making each target
+  log('trying to make assignment ...')
+  log('  $ make %s' % ' '.join(targets))
+  exit = os.system('make %s &> .out' % ' '.join(targets))
+  if exit != 0:
+    die('Failed to make!')
+  
+  # ensure the targets produced the correct binaries
+  for f in bin_files:
+    if not os.path.exists(f):
+      die('Make did not produce required binary file "%s"!' % f)
+    s = os.stat(f)
+    if s.st_mode & stat.S_IXUSR == 0:
+      die('The file "%s" is not executable!' % f)
+
+
+def check_tests(tests):
+  for tester, question, bin_file in tests:
+    log('validating "%s"...' % bin_file)
+    log('  $ %s %s %s' % (tester, question, bin_file))
+    target = os.path.join(DEST, bin_file)
+    exit = os.system('%s %s %s &> .out' % (tester, question, target))
+    if exit != 0:
+      die('Validation of "%s" failed!' % bin_file)
+
+
+def do_submit(src_files):
+  log('creating tarball for submission ...')
+  tarball = '%s.tbz2' % USER
+  exit = os.system('tar jcvf %s %s &> .out' % (tarball, ' '.join(src_files)))
+  if exit != 0:
+    die('Failed to create tarball for submission!')
+  os.chmod(os.path.join(DEST, tarball), stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+  log('submitting assignment ...')
+  exit = os.system('/local/etc/bin/sgbit /usr/staff/comp2129/bin/submit-assignment assignment2 %s/%s' % (DEST, tarball))
+  if exit != 0:
+    die('Failed to submit assignment!')
+
+
+if __name__ == '__main__':
+  USER = os.getlogin()
+  SRC  = os.getcwd()
+  DEST = tempfile.mkdtemp()
+  os.chmod(DEST, stat.S_IRWXU | stat.S_IXGRP | stat.S_IXOTH)
+
+  SRC_FILES = ('dw.c', 'dw.h', 'Makefile', '.user')
+  BIN_FILES = ('dw',)
+  TARGETS = ('clean', 'dw')
+  T = '/usr/staff/comp2129/assignment2/mark-sample'
+  TESTS = (
+    (T, 'question1', 'dw'), 
+  )
+
+  try:
+    os.chdir(DEST)
+
+    check_make(SRC_FILES, TARGETS, BIN_FILES)
+    check_tests(TESTS)
+    do_submit(SRC_FILES)
+
+    success('Assignment successfully submitted.')
+  finally:
+    os.chdir(SRC)
+    os.system('rm -rf %s' % DEST)
+
