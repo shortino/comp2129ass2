@@ -1,1 +1,3 @@
-20 20 20
+2
+bathroom 2 2
+secret-room 1 1
