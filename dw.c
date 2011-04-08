@@ -7,8 +7,10 @@
 
 struct list *head;
 struct list *curr;
-char start_room[21];
-char exit_room[21];
+char start_room[20];
+char exit_room[20];
+int player_doughnuts;
+int player_milkshakes;
 
 void 
 createRooms(int rooms){
@@ -105,12 +107,96 @@ createDoors(int doors){
 	}
 }
 
+void
+checkState(void){
+	if (!strcmp(curr->room->name, exit_room)){
+			printf("won\n");
+			exit(1);
+	}
+}
+void
+move (char c){
+	if (player_doughnuts == 0 && player_milkshakes == 0){
+		printf("lost\n");
+		exit(1);
+	}
+
+	if (c == 'L'){
+		if (curr->room->doors[LEFT]->name != NULL){
+			curr->room = curr->room->doors[LEFT];
+			--player_doughnuts;
+			--player_milkshakes;
+			checkState();
+		}
+	}
+	if (c == 'R'){
+		if (curr->room->doors[RIGHT]->name != NULL){
+			curr->room = curr->room->doors[RIGHT];
+			--player_doughnuts;
+			--player_milkshakes;
+			checkState();
+		}
+	}
+	if (c == 'U'){
+		if (curr->room->doors[UP]->name != NULL){
+			curr->room = curr->room->doors[UP];
+			--player_doughnuts;
+			--player_milkshakes;
+			checkState();
+		
+		}
+	}
+
+	if (c == 'D'){
+		if (curr->room->doors[DOWN]->name != NULL){
+			curr->room = curr->room->doors[DOWN];
+			--player_doughnuts;
+			--player_milkshakes;
+			checkState();
+		}
+	}
+}
+
+void
+consume(void){
+	if (curr->room->num_doughnuts == 0){
+		printf("lost\n"); exit(1);
+	}
+	if (player_doughnuts > 2){
+		printf("lost\n"); exit(1);
+	}
+	curr->room->num_doughnuts = curr->room->num_doughnuts-1;
+	++player_doughnuts;
+}
+
+
+void
+drink(void){
+	if (curr->room->num_milkshakes == 0){
+		printf("lost\n"); exit(1);
+	}
+	if (player_milkshakes > 1){
+		printf("lost\n"); exit(1);
+	}
+	curr->room->num_milkshakes = curr->room->num_milkshakes-1;
+	++player_milkshakes;
+}
+
+void
+printInfo(void){
+	printf("%s %d %d %d %d\n", 
+			curr->room->name, 
+			curr->room->num_doughnuts, 
+			curr->room->num_milkshakes, 
+			player_doughnuts, 
+			player_milkshakes);
+}
+
 
 int
 main(void) {
 
 	int number_rooms, number_doors, scan;
-	int i;
 
 	/*Read in rooms and no of doughnuts and milkshakes*/
 	scan = scanf("%d", &number_rooms);	
@@ -126,16 +212,51 @@ main(void) {
 	}
 	else { printf("error\n"); exit(1); }
 	
-	/*Read in start and exit rooms*/
+	/*Read in start and exit rooms - set start room*/
 	scan = scanf("%s %s", start_room, exit_room);
-	//printf("%s %s", start_room, exit_room);
+	//printf("%s %s\n", start_room, exit_room);
 	if (scan) {
-		printf("%s %s\n", start_room, exit_room);	
+		curr = head;
+		while (curr){
+			if (!strcmp(curr->room->name, start_room)){
+				printf("setted start rm\n");
+				break; // curr now pointing at start room
+			}
+			curr = curr->next;
+		}
 	}
 	else { printf("error\n"); exit(1); }
-
+	
 	/*Begin game logic*/
-	//scan = scanf("%c", 
+	char command;
+	player_doughnuts = 0;
+	player_milkshakes = 0;
+	scan = scanf("%s", &command);//WHY!
+	//printf("stuff %c\n", command);
+	if (scan){
+		while (scan != EOF){
+			if (command == 'L' || command == 'U' || command == 'R' || command == 'D'){
+				move(command);
+				printInfo();
+				continue;
+			}
+			if (command == 'G'){
+				consume();
+				printInfo();
+				continue;
+			}
+			if (command == 'M'){
+				drink();
+				printInfo();
+				continue;
+			}
+			else { printf("errori\n"); exit(1); }
+			scan = scanf("%s", &command);
+
+		}
+
+	}
+	else { printf("error\n"); exit(1); }
 
 
 
@@ -147,8 +268,7 @@ main(void) {
 		curr = curr->next;
 	}
 
-
-
-
+	
+	printf("lost\n"); //scan reached EOF and not at winning room
 	return 0;
 }

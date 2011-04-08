@@ -1,3 +1,16 @@
-2
+3
 bathroom 2 2
 secret-room 1 1
+bedroom 1 1
+1
+secret-room L bathroom
+bathroom secret-room
+G
+M
+L
+G
+M
+R
+
+
+
