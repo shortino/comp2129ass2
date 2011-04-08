@@ -97,14 +97,16 @@ createDoors(int doors){
 		else { printf("error\n"); exit(1); } 
 	}
 	if (counter < 2*doors) { printf("error\n"); exit(1); } //Door not previously defined room
-	curr = head;
-	while (curr){
-		int j;
-		for (j = 0; j != 4; ++j){
-			if (curr->room->doors[j]->name != NULL) printf("%s %s %d\n",curr->room->name,  curr->room->doors[j]->name, j );
-		}
-		curr = curr->next;
-	}
+	/*
+	   curr = head;
+	   while (curr){
+	   int j;
+	   for (j = 0; j != 4; ++j){
+	   if (curr->room->doors[j]->name != NULL) printf("%s %s %d\n",curr->room->name,  curr->room->doors[j]->name, j );
+	   }
+	   curr = curr->next;
+	   }
+	   */
 }
 
 
@@ -131,18 +133,19 @@ checkState(void){
 
 void
 move (char c){
-	if (player_doughnuts == 0 && player_milkshakes == 0){
+	if (player_doughnuts <= 0 || player_milkshakes <= 0){
+		printInfo();
 		printf("lost\n");
 		exit(1);
 	}
 	if (c == 'L'){
 		if (curr->room->doors[LEFT]->name != NULL){
-			curr->room = curr->room->doors[LEFT];
-			player_doughnuts = player_doughnuts-1;
+			curr->room = curr->room->doors[LEFT];	
+			--player_doughnuts;
 			--player_milkshakes;
-			printf("%d %d\n", player_doughnuts, player_milkshakes);
 			checkState();
 		}
+		else { --player_doughnuts; --player_milkshakes; }
 	}
 	if (c == 'R'){
 		if (curr->room->doors[RIGHT]->name != NULL){
@@ -151,6 +154,8 @@ move (char c){
 			--player_milkshakes;
 			checkState();
 		}
+		else { --player_doughnuts; --player_milkshakes; }
+
 	}
 	if (c == 'U'){
 		if (curr->room->doors[UP]->name != NULL){
@@ -160,6 +165,8 @@ move (char c){
 			checkState();
 
 		}
+		else { --player_doughnuts; --player_milkshakes; }
+
 	}
 
 	if (c == 'D'){
@@ -169,9 +176,8 @@ move (char c){
 			--player_milkshakes;
 			checkState();
 		}
+		else { --player_doughnuts; --player_milkshakes; }
 	}
-	--player_doughnuts;
-	--player_milkshakes;
 }
 
 void
@@ -199,6 +205,7 @@ drink(void){
 	++player_milkshakes;
 }
 
+/*Main Method*/
 int
 main(void) {
 
@@ -225,7 +232,6 @@ main(void) {
 		curr = head;
 		while (curr){
 			if (!strcmp(curr->room->name, start_room)){
-				printf("setted start rm\n");
 				break; // curr now pointing at start room
 			}
 			curr = curr->next;
@@ -239,36 +245,46 @@ main(void) {
 	player_milkshakes = 0;
 	scan = scanf("%s", &command);//WHY!
 	//printf("stuff %c\n", command);
-		printInfo();
-		while (scan != EOF){
-			if (scan && (command == 'L' || command == 'U' || command == 'R' || command == 'D' || command == 'G' || command == 'M')){
-				
-				if (command == 'L' || command == 'U' || command == 'R' || command == 'D'){
-					move(command);
-					printInfo();
-				}
-				if (command == 'G'){
-					consume();
-					printInfo();
-				}
-				if (command == 'M'){
-					drink();
-					printInfo();
-				}
-				scan = scanf("%s", &command);
-				//else { printf("error\n"); exit(1); }
+	printInfo();
+	while (scan != EOF){
+		if (scan && (command == 'L' || command == 'U' || command == 'R' || command == 'D' || command == 'G' || command == 'M')){
+
+			if (command == 'L' || command == 'U' || command == 'R' || command == 'D'){
+				//printf("%d %d\n", player_doughnuts, player_milkshakes);
+				move(command);
+				printInfo();
 			}
+			if (command == 'G'){
+				consume();
+				printInfo();
+			}
+			if (command == 'M'){
+				drink();
+				printInfo();
+			}
+			scan = scanf("%s", &command);
+			//else { printf("error\n"); exit(1); }
+		}
 		else { printf("error\n"); exit(1); }
-		}
-
-		curr = head;
-		while(curr){
-			printf("Printing name, doughnuts, milkshakes\n");
-			printf("%s %i %i\n", curr->room->name, curr->room->num_doughnuts, curr->room->num_milkshakes);
-			curr = curr->next;
-		}
-
-
-		printf("lost\n"); //scan reached EOF and not at winning room
-		return 0;
 	}
+	/*
+	   curr = head;
+	   while(curr){
+	   printf("Printing name, doughnuts, milkshakes\n");
+	   printf("%s %i %i\n", curr->room->name, curr->room->num_doughnuts, curr->room->num_milkshakes);
+	   curr = curr->next;
+	   }
+
+*/	
+	printf("lost\n"); //scan reached EOF and not at winning room
+	struct list *temp;
+	curr = head;
+	while(curr){
+		temp = curr->next;
+		free(head);
+		curr = temp;
+	}
+
+
+	return 0;
+}
