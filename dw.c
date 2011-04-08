@@ -59,14 +59,15 @@ createDoors(int doors){
 	struct room *linked_room_two;
 
 	for (i = 0; i != doors; ++i){
-		//linked_room_two = malloc(sizeof(struct room));
 		//linked_room_one = malloc(sizeof(struct room));
+
 		//curr = malloc(sizeof(struct list));
 		scan = scanf("%s %c %s", room_one, &path, room_two);
-		//printf("this is rm one and two %s %s", room_one, room_two);
+		printf("this is rm one and two %s %s\n", room_one, room_two);
+		linked_room_two = NULL;
 		curr = head;
 		while (curr){
-			if (strcmp(curr->room->name, room_one)){
+			if (!strcmp(curr->room->name, room_one)){
 				num = getPath(path, 0);
 				//printf("room one %s\n", room_one);
 				if (curr->room->doors[num]->name != NULL){ //Check for existing door declaration combo
@@ -78,10 +79,14 @@ createDoors(int doors){
 				//printf("room oned %s\n", linked_room_one->name);
 				//strcpy(curr->room->doors[num], curr->room->name);
 			}
-			if (strcmp(curr->room->name, room_two)){
+			if (!strcmp(curr->room->name, room_two)){
+				printf("%d\n", strcmp(curr->room->name, room_two));
+				//linked_room_two = malloc(sizeof(struct room));
 				//strcpy(curr->room->doors[getPath(path, 1)], room_one);
+				linked_room_two = NULL;
 				linked_room_two = curr->room;
 				path_two = getPath(path, 1);
+				printf("room two is here after set %s\n", curr->room->name);
 			}
 
 			curr = curr->next;
