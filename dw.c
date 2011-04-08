@@ -269,9 +269,11 @@ run_game(){
 				if (!drink()) { return; }
 				//printInfo();
 			}
-			scan = scanf("\n%c", &command);
+		
 		}
 		else { printf("error\n"); return; }
+
+			scan = scanf("\n%c", &command);
 	
 	}
 	printf("lost\n");
@@ -285,49 +287,36 @@ run_game(){
  */
 void
 free_list(){
-	struct list *temp;
-
-//	if(head->next!=NULL){
-//		struct room * lol1 = head->next->room;
-//		if 
-//		struct room * lol2 = head->next->next->room;
-//
-//		printf("not working\n");
-//	}
-//	if(head->next == head->next->next){
-//		printf("an even bigger one\n");
-//	}
-	struct list *i = head->next;
-	//free(head->room);
-	free(head);
-	//int i = 0;
-	while(i->next!=NULL){
+		struct list *temp;
+		struct list *i = head->next;
+	//free(head->room);	
+	free(head);	
+	while ( i->next != NULL){
 		temp = i->next;
-		free(i->room);
+		free(i->room);		
 		free(i);
 		i = temp;
 	}
-	if(i!=head){
+	
+	if(i != head){
 		free(i->room);
 	}
 	free(i);	
+	
 }
 
-
+/*
 void
 free_list2() {
 	struct list *item = head;
-	printf("%s", head->next->next->room->name);
 	while (item != NULL) {
 		//delete the room
 		free(item->room);
-		//get the next item before we destroy current item
 		struct list *next_item = item->next;
 		//delete current)
 		free(item);
 		item = next_item;
 	}
-	printf("blah");
 	free(item->room);
 	free(item);
 }
@@ -335,7 +324,6 @@ void
 free_list3(){
 	//struct list *item = true_head;
 	curr = head;
-
 	printf("THIS IS HEAD %s\n", head->room->name);
 	while(curr){
 		//free(item->room);
@@ -344,6 +332,7 @@ free_list3(){
 		curr = curr->next;
 	}
 }
+*/
 
 
 /*Main Method*/
