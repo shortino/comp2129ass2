@@ -60,57 +60,45 @@ createDoors(int doors){
 
 	for (i = 0; i != doors; ++i){
 		//linked_room_one = malloc(sizeof(struct room));
-
 		//curr = malloc(sizeof(struct list));
 		scan = scanf("%s %c %s", room_one, &path, room_two);
-		printf("this is rm one and two %s %s\n", room_one, room_two);
-		linked_room_two = NULL;
-		curr = head;
-		while (curr){
-			if (!strcmp(curr->room->name, room_one)){
-				num = getPath(path, 0);
-				//printf("room one %s\n", room_one);
-				if (curr->room->doors[num]->name != NULL){ //Check for existing door declaration combo
-					printf("error\n");
-					exit(1);
+		if (scan){
+			printf("this is rm one and two %s %s\n", room_one, room_two);
+			linked_room_two = NULL;
+			curr = head;
+			while (curr){
+				if (!strcmp(curr->room->name, room_one)){
+					num = getPath(path, 0);
+					//printf("room one %s\n", room_one);
+					if (curr->room->doors[num]->name != NULL){ //Check for existing door declaration combo
+						printf("error\n");
+						exit(1);
+					}
+					linked_room_one = curr->room;
+					path_one = getPath(path, 0);
+					//printf("room oned %s\n", linked_room_one->name);
+					//strcpy(curr->room->doors[num], curr->room->name);
 				}
-				linked_room_one = curr->room;
-				path_one = getPath(path, 0);
-				//printf("room oned %s\n", linked_room_one->name);
-				//strcpy(curr->room->doors[num], curr->room->name);
-			}
-			if (!strcmp(curr->room->name, room_two)){
-				printf("%d\n", strcmp(curr->room->name, room_two));
-				//linked_room_two = malloc(sizeof(struct room));
-				//strcpy(curr->room->doors[getPath(path, 1)], room_one);
-				linked_room_two = NULL;
-				linked_room_two = curr->room;
-				path_two = getPath(path, 1);
-				printf("room two is here after set %s\n", curr->room->name);
-			}
+				if (!strcmp(curr->room->name, room_two)){
+					printf("%d\n", strcmp(curr->room->name, room_two));
+					//linked_room_two = malloc(sizeof(struct room));
+					//strcpy(curr->room->doors[getPath(path, 1)], room_one);
+					linked_room_two = NULL;
+					linked_room_two = curr->room;
+					path_two = getPath(path, 1);
+					printf("room two is here after set %s\n", curr->room->name);
+				}
 
-			curr = curr->next;
-		}
-		/*Set the doors*/
-		/*
-		curr = head;
-		while(curr){
-			if (strcmp(curr->room->name, room_one)){
-				curr->room->doors[path_one] = linked_room_two;
+				curr = curr->next;
 			}
-			if (strcmp(curr->room->name, room_two)){
-				curr->room->doors[path_two] = linked_room_one;
-			}
-		
-		curr = curr->next;
+			/*Set the doors*/
+			linked_room_one->doors[path_one] = linked_room_two;
+			//printf("path one and two %d %d\n", path_one, path_two);
+			//printf("room one %s\n", linked_room_one->doors[path_one]->name);
+			linked_room_two->doors[path_two] = linked_room_one;		
+			//printf("room two %s\n", linked_room_two->doors[path_two]->name);
 		}
-		*/
-		linked_room_one->doors[path_one] = linked_room_two;
-		//printf("path one and two %d %d\n", path_one, path_two);
-		//printf("room one %s\n", linked_room_one->doors[path_one]->name);
-		linked_room_two->doors[path_two] = linked_room_one;		
-		//printf("room two %s\n", linked_room_two->doors[path_two]->name);
-		
+		else { printf("error\n"); exit(1); } 
 	}
 	curr = head;
 	while (curr){
@@ -140,7 +128,11 @@ main(void) {
 	if (scan) {
 		createDoors(number_doors);
 	}
-	else { printf("error\n"); exit(1); } 
+	else { printf("error\n"); exit(1); }
+
+
+
+
 	curr = head;
 	while(curr){
 		printf("%s %i %i\n", curr->room->name, curr->room->num_doughnuts, curr->room->num_milkshakes);
@@ -149,6 +141,6 @@ main(void) {
 
 
 
-	
+
 	return 0;
 }
