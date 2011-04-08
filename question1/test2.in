@@ -1,0 +1,9 @@
+2
+room_one 0 0
+room_two 2 3
+1
+room_one R room_two
+room_one room_two
+G
+M
+R

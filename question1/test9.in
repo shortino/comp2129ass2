@@ -1,0 +1,15 @@
+4
+bathroom 2 2
+kitchen 1 9
+kitchen 1 9
+secret-room 1 1
+2
+bathroom R kitchen
+kitchen U secret-room
+kitchen secret-room
+G
+M
+U
+G
+M
+L

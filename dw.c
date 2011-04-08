@@ -21,7 +21,7 @@ createRooms(int rooms){
 		new_room = malloc(sizeof(struct room));
 		scan = scanf("%20s %d %d", names, &num_doughnuts, &num_milkshakes);//todo still need length?
 		length = strlen(names);
-		if (scan && num_doughnuts > 0 && num_milkshakes > 0 && length < 21) {
+		if (scan && num_doughnuts >= 0 && num_milkshakes >= 0 && length < 21) {
 			curr = malloc(sizeof(struct list));
 			strcpy(new_room->name, names);
 			new_room->num_doughnuts = num_doughnuts;

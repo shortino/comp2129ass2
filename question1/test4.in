@@ -1,0 +1,35 @@
+7
+room_one 1 1
+room_two 2 3
+room_three 2 1
+room_four 0 1
+room_five 0 0
+room_six 0 0
+room_seven 1 1
+7
+room_one R room_two
+room_two R room_five
+room_two U room_three
+room_two D room_four
+room_two R room_five
+room_five R room_six
+room_six D room_seven
+room_one room_seven
+G
+M
+R
+G
+M
+U
+G
+M
+D
+G
+M
+R
+G
+M
+R
+G
+M
+D

@@ -1,0 +1,17 @@
+3
+room_one 2 2
+room_two 2 2
+secret-room 2 1
+2
+room_one R room_two
+room_two U secret-room
+room_one secret-room
+G
+M
+R
+G
+M
+D
+G
+M
+U

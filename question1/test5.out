@@ -1,0 +1,11 @@
+room_one 2 2 0 0
+room_one 1 2 1 0
+room_one 1 1 1 1
+room_two 2 2 0 0
+room_two 1 2 1 0
+room_two 1 1 1 1
+room_two 1 1 0 0
+room_two 0 1 1 0
+room_two 0 0 1 1
+secret-room 2 1 0 0
+won
